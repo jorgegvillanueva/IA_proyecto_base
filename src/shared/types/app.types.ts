@@ -5,3 +5,6 @@ export interface PersistedState {
   tasks: Task[];
   settings: Settings;
 }
+
+/** Unified app state used by reducers and context. */
+export type AppState = PersistedState;
