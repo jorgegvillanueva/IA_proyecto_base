@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { AppProvider } from './AppProvider';
 import { TaskList, TaskModal, DeleteTaskDialog } from '../features/tasks/components';
+import { WelcomeModal, SettingsModal } from '../features/settings/components';
 import { Button } from '../shared/ui';
+import { useAppState } from './useAppState';
 
 type ModalState =
   | { mode: 'create' }
@@ -9,8 +11,10 @@ type ModalState =
   | null;
 
 function AppShell() {
+  const { state } = useAppState();
   const [modalState, setModalState] = useState<ModalState>(null);
   const [deletingTaskId, setDeletingTaskId] = useState<string | null>(null);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -19,8 +23,8 @@ function AppShell() {
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
           <h1 className="text-lg font-bold text-primary">Gestor ICE</h1>
           <div className="flex items-center gap-2">
-            {/* Settings placeholder — Tarea 7 */}
-            <Button variant="secondary" onClick={() => {}}>
+            {/* Settings button */}
+            <Button variant="secondary" onClick={() => setIsSettingsOpen(true)}>
               ⚙ Settings
             </Button>
             <Button onClick={() => setModalState({ mode: 'create' })}>+ Nueva Tarea</Button>
@@ -53,8 +57,11 @@ function AppShell() {
         />
       )}
 
-      {/* WelcomeModal — Tarea 7 */}
-      {/* SettingsModal — Tarea 7 */}
+      {/* WelcomeModal */}
+      {!state.settings.hasSeenWelcome && <WelcomeModal />}
+
+      {/* SettingsModal */}
+      <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
     </div>
   );
 }
