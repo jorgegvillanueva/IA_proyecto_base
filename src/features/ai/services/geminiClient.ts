@@ -6,15 +6,14 @@ export type SuggestionResult = {
 };
 
 const GEMINI_API_ENDPOINT =
-  'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+  'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent';
 
-const SYSTEM_INSTRUCTION = `Eres un asistente experto en priorización de tareas usando el método ICE (Impact, Confidence, Ease).
-Tu tarea es analizar una descripción de tarea y sugerir valores numéricos para cada dimensión (0-10).`;
+const SYSTEM_INSTRUCTION = `Actúa como un experto en priorización de tareas usando el método ICE (Impact, Confidence, Ease).
+Analiza la descripción de tarea y sugiere valores numéricos para cada dimensión (0-10).`;
 
-const USER_PROMPT_TEMPLATE = (title: string, description: string) => `
-Analiza esta tarea y sugiere valores ICE (Impact, Confidence, Ease) del 0 al 10:
+const USER_PROMPT_TEMPLATE = (title: string, description: string) => `${SYSTEM_INSTRUCTION}
 
-Título: ${title}
+Tarea: ${title}
 Descripción: ${description}
 
 Responde ÚNICAMENTE con un objeto JSON válido en este formato exacto:
@@ -25,8 +24,7 @@ Responde ÚNICAMENTE con un objeto JSON válido en este formato exacto:
   "justification": "<máximo 150 caracteres explicando brevemente>"
 }
 
-No incluyas markdown, comentarios ni texto adicional.
-`;
+No incluyas markdown, comentarios ni texto adicional.`;
 
 function validateSuggestion(data: unknown): SuggestionResult {
   if (
@@ -83,16 +81,16 @@ export async function getSuggestedICE(
   const url = `${GEMINI_API_ENDPOINT}?key=${encodeURIComponent(apiKey)}`;
 
   const body = {
-    system_instruction: {
-      parts: {
-        text: SYSTEM_INSTRUCTION,
+    contents: [
+      {
+        role: 'user',
+        parts: [
+          {
+            text: USER_PROMPT_TEMPLATE(title, description),
+          },
+        ],
       },
-    },
-    contents: {
-      parts: {
-        text: USER_PROMPT_TEMPLATE(title, description),
-      },
-    },
+    ],
   };
 
   try {

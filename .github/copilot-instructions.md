@@ -1,0 +1,5 @@
+- **Idioma:** Responde siempre en español, pero mantén el código (variables, funciones) en inglés.
+- **Arquitectura:** Sigue patrones de Clean Architecture. Separa la lógica de negocio de los controladores.
+- **Git:** Asegúrate de que todas las sugerencias de commits sigan el estándar de 'Conventional Commits' (ej: feat:, fix:, docs:).
+- **Seguridad:** Si sugieres código que maneja contraseñas o tokens, añade siempre una advertencia sobre variables de entorno.
+- **Testing:** Para cada nueva función, sugiere automáticamente un esqueleto de test unitario usando Vitest o Jest.
