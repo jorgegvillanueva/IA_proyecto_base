@@ -1,0 +1,5 @@
+- Genera el código de la tarea utilizando siempre typescript y aplicando tipado lo más posible
+- no generes más cambios que los pedidos en la tarea
+- aplica siempre buenas prácticas de React y Typescript
+- antes de aplicar las tareas de cada subtarea da la opción de revisar y modificar
+- en el último paso aplica linting y soluciona los errores que se hayan generado, pero pide verificar la aplicación de esos cambios antes de aplicarlos
