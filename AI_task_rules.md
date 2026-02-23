@@ -3,3 +3,6 @@
 - aplica siempre buenas prácticas de React y Typescript
 - antes de aplicar las tareas de cada subtarea da la opción de revisar y modificar
 - en el último paso aplica linting y soluciona los errores que se hayan generado, pero pide verificar la aplicación de esos cambios antes de aplicarlos
+- cuando apliques el PR 
+-- añade la descripción sacada de la tarea
+-- añade checklist de verificación, criterios de aceptación, información de instalación para probar que funciona
