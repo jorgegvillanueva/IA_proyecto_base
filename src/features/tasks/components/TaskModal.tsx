@@ -3,7 +3,9 @@ import type { ReactElement } from 'react';
 import { Modal } from '../../../shared/ui/Modal';
 import { Button } from '../../../shared/ui/Button';
 import { Input } from '../../../shared/ui/Input';
+import { Spinner } from '../../../shared/ui/Spinner';
 import { useAppState } from '../../../app/useAppState';
+import { useGeminiSuggestion } from '../../ai/hooks/useGeminiSuggestion';
 import { calculateIceScore } from '../lib/ice';
 import { validateTask } from '../lib/validateTask';
 
@@ -21,6 +23,7 @@ function parseIceField(raw: string): number | null {
 
 export function TaskModal({ taskId, onClose }: TaskModalProps): ReactElement {
   const { state, dispatch } = useAppState();
+  const { status, suggestion, suggest } = useGeminiSuggestion();
   const isEditing = taskId !== undefined;
   const existingTask = isEditing ? state.tasks.find((t) => t.id === taskId) : undefined;
 
@@ -48,6 +51,15 @@ export function TaskModal({ taskId, onClose }: TaskModalProps): ReactElement {
       dispatch({ type: 'ADD_TASK', payload: { title, description, impact, confidence, ease } });
     }
     onClose();
+  }
+
+  async function handleSuggestICE() {
+    const result = await suggest(title, description);
+    if (result) {
+      setImpactRaw(result.impact.toString());
+      setConfidenceRaw(result.confidence.toString());
+      setEaseRaw(result.ease.toString());
+    }
   }
 
   return (
@@ -129,6 +141,26 @@ export function TaskModal({ taskId, onClose }: TaskModalProps): ReactElement {
             {liveScore > 0 ? liveScore.toFixed(1) : '—'}
           </span>
         </p>
+
+        {/* AI Suggestion Button */}
+        <div>
+          <Button
+            variant="secondary"
+            onClick={handleSuggestICE}
+            disabled={!state.settings.geminiApiKey || status === 'loading'}
+            className="w-full"
+          >
+            {status === 'loading' ? <Spinner text="Consultando IA..." /> : '+ Sugerir ICE con IA'}
+          </Button>
+        </div>
+
+        {/* AI Suggestion Justification */}
+        {suggestion && (
+          <div className="rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-700">
+            <p className="font-medium text-gray-900">Justificación de IA:</p>
+            <p className="mt-1">{suggestion.justification}</p>
+          </div>
+        )}
 
         {/* Actions */}
         <div className="flex justify-end gap-3 pt-2">
